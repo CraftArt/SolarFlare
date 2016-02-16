@@ -1,0 +1,19 @@
+{
+  "name": "solarflare",
+  "version": "1.0.0",
+  "description": "Realtime dashboard using D3 and react",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CraftArt/SolarFlare.git"
+  },
+  "author": "Vivek Thakur",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CraftArt/SolarFlare/issues"
+  },
+  "homepage": "https://github.com/CraftArt/SolarFlare#readme"
+}
