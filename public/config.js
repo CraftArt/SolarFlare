@@ -14,10 +14,11 @@ System.config({
   },
 
   map: {
+    "angular": "github:angular/bower-angular@1.5.0",
     "babel": "npm:babel-core@5.8.35",
     "babel-runtime": "npm:babel-runtime@5.8.35",
     "core-js": "npm:core-js@1.2.6",
-    "mbostock/d3": "github:mbostock/d3@3.5.15",
+    "d3": "npm:d3@3.5.16",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.3.0"
     },
