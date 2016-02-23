@@ -2,23 +2,23 @@
 let fs = require('fs'),
     _ = require('underscore'),
     Converter = require('csvtojson').core.Converter;
-_.mixin({
-        groupByMulti: function (data, values, ctx) {
-            if (!values.length){
-                return data;
-            }
-            let byFirst = _.groupBy(data, values[0], ctx),
-                rest = values.slice(1);
-            for (let prop of byFirst) {
-                byFirst[prop] = _.groupByMulti(byFirst[prop], rest, ctx);
-            }
-            return byFirst;
-        }
-    });
 
 class DataUtil {
 
     constructor(){
+        _.mixin({
+            groupByMulti: function (data, values, ctx) {
+                if (!values.length){
+                    return data;
+                }
+                let byFirst = _.groupBy(data, values[0], ctx),
+                    rest = values.slice(1);
+                for (var prop in byFirst) {
+                    byFirst[prop] = _.groupByMulti(byFirst[prop], rest, ctx);
+                }
+                return byFirst;
+            }
+        });
     }
 
     _grabMapping(mappingCsvPath, serverCsvPath, callback){
@@ -77,38 +77,38 @@ class DataUtil {
     process(mappingCsvPath, serverCsvPath, callback){
         this._clubData(mappingCsvPath, serverCsvPath, (data) => {
             let jsonObj = data,
-                totalServers = jsonObj.length,
-                groupedData = _.groupByMulti(jsonObj,['Portfolio','Service','App','Model','OS']),
+                totalServers = jsonObj.length;
+            let groupedData = _.groupByMulti(jsonObj,['Portfolio','Service','App','Model','OS']),
                 root = {
                     name: "Dash",
                     total: totalServers,
                     children:[]
                 };
-            for(let portfolio of groupedData) {
+            for(let portfolio in groupedData) {
                 let levelP = {
                     name: portfolio,
                     autocolor: true,
                     children: []
                 }
-                for(let service of groupedData[portfolio]) {
+                for (let service in groupedData[portfolio]) {
                     let level0 = {
                         name: service,
                         autocolor: true,
                         children: []
                     };
-                    for(let app of groupedData[portfolio][service]) {
+                    for (let app in groupedData[portfolio][service]) {
                         let level1 = {
                             name: app,
                             autocolor: true,
                             children: []
                         };
-                        for(let model of groupedData[portfolio][service][app]) {
+                        for (let model in groupedData[portfolio][service][app]) {
                             let level2 = {
                                 name: model,
                                 type: 'Model',
                                 children: []
                             };
-                            for(let os in groupedData[portfolio][service][app][model]) {
+                            for (let os in groupedData[portfolio][service][app][model]) {
                                 let level3 = {
                                     name: os,
                                     type: 'OS',
