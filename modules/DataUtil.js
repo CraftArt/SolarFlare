@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 let fs = require('fs'),
     _ = require('underscore'),
     Converter = require('csvtojson').core.Converter;
@@ -13,7 +13,7 @@ class DataUtil {
                 }
                 let byFirst = _.groupBy(data, values[0], ctx),
                     rest = values.slice(1);
-                for (var prop in byFirst) {
+                for (let prop in byFirst) {
                     byFirst[prop] = _.groupByMulti(byFirst[prop], rest, ctx);
                 }
                 return byFirst;
@@ -25,7 +25,7 @@ class DataUtil {
         let _fileStream = fs.createReadStream(mappingCsvPath),
             _csvConverter = new Converter({constructResult: true});
         _fileStream.pipe(_csvConverter);
-        _csvConverter.on("end_parsed", (data) => {
+        _csvConverter.on('end_parsed', (data) => {
             this._mappingJson = _.filter(data, (d) => d.Identifier !== '' );
             this._serverDataJson = this._grabServerData(serverCsvPath, callback);
         });
@@ -35,7 +35,7 @@ class DataUtil {
         let _fileStream = fs.createReadStream(serverCsvPath);
         let _csvConverter = new Converter({constructResult: true});
         _fileStream.pipe(_csvConverter);
-        _csvConverter.on("end_parsed", (data) => {
+        _csvConverter.on('end_parsed', (data) => {
             this._serverDataJson = data;
             return callback();
         });
@@ -69,7 +69,7 @@ class DataUtil {
         }
 
         let lessData = _.filter(this._serverDataJson, (data) => data.Service != null);
-        fs.writeFile("./public/data/clubTest.json", JSON.stringify(lessData));
+        fs.writeFile('./public/data/clubTest.json', JSON.stringify(lessData));
         return callback(lessData);
         });
     }
@@ -80,7 +80,7 @@ class DataUtil {
                 totalServers = jsonObj.length;
             let groupedData = _.groupByMulti(jsonObj,['Portfolio','Service','App','Model','OS']),
                 root = {
-                    name: "Dash",
+                    name: 'Dash',
                     total: totalServers,
                     children:[]
                 };
@@ -89,7 +89,7 @@ class DataUtil {
                     name: portfolio,
                     autocolor: true,
                     children: []
-                }
+                };
                 for (let service in groupedData[portfolio]) {
                     let level0 = {
                         name: service,
@@ -114,7 +114,6 @@ class DataUtil {
                                     type: 'OS',
                                     size: groupedData[portfolio][service][app][model][os].length
                                 };
-                                //console.log(service+"-"+app + "-" + model + "-" +os+ ","+groupedData[service][app][model][os].length);
                                 level2.children.push(level3);
                             }
                             level1.children.push(level2);
@@ -125,7 +124,7 @@ class DataUtil {
                 }
                 root.children.push(levelP);
             }
-            fs.writeFile("./public/data/test.json",JSON.stringify(root));
+            fs.writeFile('./public/data/test.json',JSON.stringify(root));
             callback(root);
         });
     }
