@@ -5,7 +5,9 @@ let fs = require('fs'),
 
 const MAPPING_CSV = './public/data/Portfolio-service-App.csv';
 const SERVER_CSV = './public/data/serverData.csv';
-const OUTPUT = './public/data/clubTest.json';
+const CLUB_OUTPUT = './public/data/clubTest.json';
+const OUTPUT = './public/data/test.json';
+const REQUIRED_ATTR = ['Portfolio','Service','App','Model','OS'];
 
 class DataUtil {
 
@@ -74,7 +76,7 @@ class DataUtil {
         }
 
         let lessData = _.filter(this._serverDataJson, (data) => data.Service != null);
-        fs.writeFile(OUTPUT, JSON.stringify(lessData));
+        fs.writeFile(CLUB_OUTPUT, JSON.stringify(lessData));
         return callback(lessData);
         });
     }
@@ -83,7 +85,7 @@ class DataUtil {
         this._clubData(MAPPING_CSV, SERVER_CSV, (data) => {
             let jsonObj = data,
                 totalServers = jsonObj.length;
-            let groupedData = _.groupByMulti(jsonObj,['Portfolio','Service','App','Model','OS']),
+            let groupedData = _.groupByMulti(jsonObj,REQUIRED_ATTR),
                 root = {
                     name: 'Dash',
                     total: totalServers,
@@ -129,7 +131,7 @@ class DataUtil {
                 }
                 root.children.push(levelP);
             }
-            fs.writeFile('./public/data/test.json',JSON.stringify(root));
+            fs.writeFile(OUTPUT, JSON.stringify(root));
             callback(root);
         });
     }
