@@ -3,6 +3,10 @@ let fs = require('fs'),
     _ = require('underscore'),
     Converter = require('csvtojson').core.Converter;
 
+const MAPPING_CSV = './public/data/Portfolio-service-App.csv';
+const SERVER_CSV = './public/data/serverData.csv';
+const OUTPUT = './public/data/clubTest.json';
+
 class DataUtil {
 
     constructor(){
@@ -42,6 +46,7 @@ class DataUtil {
     }
 
     _clubData(mappingCsvPath, serverCsvPath, callback){
+        //Data should be passed to the callback, rather than relying on the instance objects _mappingJson/_serverDataJson.
     this._grabMapping(mappingCsvPath, serverCsvPath, () => {
         for(let appObj of this._mappingJson){
             if (appObj.Identifier.indexOf(',') === -1) {
@@ -69,13 +74,13 @@ class DataUtil {
         }
 
         let lessData = _.filter(this._serverDataJson, (data) => data.Service != null);
-        fs.writeFile('./public/data/clubTest.json', JSON.stringify(lessData));
+        fs.writeFile(OUTPUT, JSON.stringify(lessData));
         return callback(lessData);
         });
     }
 
-    process(mappingCsvPath, serverCsvPath, callback){
-        this._clubData(mappingCsvPath, serverCsvPath, (data) => {
+    process(callback){
+        this._clubData(MAPPING_CSV, SERVER_CSV, (data) => {
             let jsonObj = data,
                 totalServers = jsonObj.length;
             let groupedData = _.groupByMulti(jsonObj,['Portfolio','Service','App','Model','OS']),
