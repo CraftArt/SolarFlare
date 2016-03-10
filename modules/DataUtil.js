@@ -3,6 +3,12 @@ let fs = require('fs'),
     _ = require('underscore'),
     Converter = require('csvtojson').core.Converter;
 
+const MAPPING_CSV = './public/data/Portfolio-service-App.csv';
+const SERVER_CSV = './public/data/serverData.csv';
+const CLUB_OUTPUT = './public/data/clubTest.json';
+const OUTPUT = './public/data/test.json';
+const REQUIRED_ATTR = ['Portfolio','Service','App','Model','OS'];
+
 class DataUtil {
 
     constructor(){
@@ -42,6 +48,7 @@ class DataUtil {
     }
 
     _clubData(mappingCsvPath, serverCsvPath, callback){
+        //Data should be passed to the callback, rather than relying on the instance objects _mappingJson/_serverDataJson.
     this._grabMapping(mappingCsvPath, serverCsvPath, () => {
         for(let appObj of this._mappingJson){
             if (appObj.Identifier.indexOf(',') === -1) {
@@ -69,16 +76,16 @@ class DataUtil {
         }
 
         let lessData = _.filter(this._serverDataJson, (data) => data.Service != null);
-        fs.writeFile('./public/data/clubTest.json', JSON.stringify(lessData));
+        fs.writeFile(CLUB_OUTPUT, JSON.stringify(lessData));
         return callback(lessData);
         });
     }
 
-    process(mappingCsvPath, serverCsvPath, callback){
-        this._clubData(mappingCsvPath, serverCsvPath, (data) => {
+    process(callback){
+        this._clubData(MAPPING_CSV, SERVER_CSV, (data) => {
             let jsonObj = data,
                 totalServers = jsonObj.length;
-            let groupedData = _.groupByMulti(jsonObj,['Portfolio','Service','App','Model','OS']),
+            let groupedData = _.groupByMulti(jsonObj,REQUIRED_ATTR),
                 root = {
                     name: 'Dash',
                     total: totalServers,
@@ -124,7 +131,7 @@ class DataUtil {
                 }
                 root.children.push(levelP);
             }
-            fs.writeFile('./public/data/test.json',JSON.stringify(root));
+            fs.writeFile(OUTPUT, JSON.stringify(root));
             callback(root);
         });
     }
